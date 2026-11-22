@@ -1,10 +1,10 @@
 package com.bridgelabz.addressbookapp.service;
 
 import com.bridgelabz.addressbookapp.dto.AddressBookDto;
+import com.bridgelabz.addressbookapp.exception.ContactNotFoundException;
 import com.bridgelabz.addressbookapp.model.AddressBookEntry;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class AddressBookService {
 
     public synchronized AddressBookEntry get(long id) {
         return contacts.stream().filter(contact -> contact.getId() == id).findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Contact not found: " + id));
+                .orElseThrow(() -> new ContactNotFoundException(id));
     }
 
     public synchronized AddressBookEntry create(AddressBookDto request) {
