@@ -5,9 +5,11 @@ import com.bridgelabz.addressbookapp.model.AddressBookEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class AddressBookService {
     private final List<AddressBookEntry> contacts = new ArrayList<>();
     private long nextId = 1;
@@ -23,6 +25,7 @@ public class AddressBookService {
         AddressBookEntry contact = new AddressBookEntry(nextId++, request.getName(),
                 request.getPhoneNumber(), request.getCity());
         contacts.add(contact);
+        log.info("Created contact id={}", contact.getId());
         return contact;
     }
 
@@ -31,10 +34,12 @@ public class AddressBookService {
         contact.setName(request.getName());
         contact.setPhoneNumber(request.getPhoneNumber());
         contact.setCity(request.getCity());
+        log.info("Updated contact id={}", id);
         return contact;
     }
 
     public synchronized void delete(long id) {
         contacts.remove(get(id));
+        log.info("Deleted contact id={}", id);
     }
 }
