@@ -2,6 +2,7 @@ package com.bridgelabz.addressbookapp.controller;
 
 import com.bridgelabz.addressbookapp.dto.AddressBookDto;
 import com.bridgelabz.addressbookapp.model.AddressBookEntry;
+import com.bridgelabz.addressbookapp.service.AddressBookService;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,27 +10,29 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/addressbookservice")
 public class AddressBookController {
+    private final AddressBookService service;
+
+    public AddressBookController(AddressBookService service) { this.service = service; }
+
     @GetMapping({"", "/"})
-    public List<AddressBookEntry> list() { return List.of(); }
+    public List<AddressBookEntry> list() { return service.list(); }
 
     @GetMapping("/get/{id}")
-    public AddressBookEntry get(@PathVariable long id) {
-        return new AddressBookEntry(id, "Example", "0000000000", "Example City");
-    }
+    public AddressBookEntry get(@PathVariable long id) { return service.get(id); }
 
     @PostMapping("/create")
     public ResponseEntity<AddressBookEntry> create(@RequestBody AddressBookDto request) {
-        return ResponseEntity.status(201).body(new AddressBookEntry(1, request.getName(),
-                request.getPhoneNumber(), request.getCity()));
+        return ResponseEntity.status(201).body(service.create(request));
     }
 
     @PutMapping("/update/{id}")
     public AddressBookEntry update(@PathVariable long id, @RequestBody AddressBookDto request) {
-        return new AddressBookEntry(id, request.getName(), request.getPhoneNumber(), request.getCity());
+        return service.update(id, request);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
